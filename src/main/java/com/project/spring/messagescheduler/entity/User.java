@@ -11,7 +11,7 @@ import java.sql.Timestamp;
 @AllArgsConstructor
 @NoArgsConstructor
 public class User {
-    private int userId;
+    private long userId;
     private String userName;
     private String authToken;
     private Timestamp createdAt;

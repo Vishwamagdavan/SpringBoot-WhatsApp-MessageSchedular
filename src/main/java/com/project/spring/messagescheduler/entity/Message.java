@@ -10,9 +10,9 @@ import java.sql.Timestamp;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Message {
-    private int messageId;
+    private long messageId;
     private String messageContent;
-    private int userId;
+    private long userId;
     private String phoneNumber;
     private Timestamp createdTime;
     private Timestamp scheduledTime;

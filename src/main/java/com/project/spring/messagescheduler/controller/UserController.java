@@ -15,4 +15,9 @@ public class UserController {
     public ResponseEntity<User> createUser(@RequestBody UserRequest userRequest){
         return null;
     }
+
+    @PostMapping("/login")
+    public ResponseEntity<Object> loginUser(@RequestBody UserRequest userRequest){
+        return null;
+    }
 }
