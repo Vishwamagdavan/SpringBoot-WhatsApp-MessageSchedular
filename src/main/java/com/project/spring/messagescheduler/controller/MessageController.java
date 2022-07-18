@@ -32,8 +32,8 @@ public class MessageController {
         return null;
     }
 
-    @GetMapping("/messages")
-    public ResponseEntity<List<Message>> retrieveAllStatusMessages(@RequestParam String status){
+    @GetMapping("/messages/{status}")
+    public ResponseEntity<List<Message>> retrieveAllStatusMessages(@PathVariable String status){
         return null;
     }
 }
