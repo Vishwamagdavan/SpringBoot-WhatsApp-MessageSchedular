@@ -9,4 +9,6 @@ public interface MessageRepository {
     int sendMessage(User user);
     Message retrieveMessage(Long messageId);
     List<Message> retrieveAllMessages();
+
+    List<Message> retrieveMessageByStatus(int type);
 }
