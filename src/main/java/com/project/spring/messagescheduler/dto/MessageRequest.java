@@ -1,4 +1,4 @@
-package com.project.spring.messagescheduler.entity;
+package com.project.spring.messagescheduler.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -9,14 +9,9 @@ import java.sql.Timestamp;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Message {
-    private int messageId;
+public class MessageRequest {
     private String messageContent;
     private int userId;
     private String phoneNumber;
-    private Timestamp createdTime;
     private Timestamp scheduledTime;
-    private int status;
-    private String gupshupMessageId;
-    private Timestamp sentTime;
 }
