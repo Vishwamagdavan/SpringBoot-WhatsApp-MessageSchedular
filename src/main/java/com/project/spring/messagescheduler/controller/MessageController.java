@@ -31,4 +31,9 @@ public class MessageController {
     public ResponseEntity<List<Message>> retrieveAllMessages(){
         return null;
     }
+
+    @GetMapping("/messages")
+    public ResponseEntity<List<Message>> retrieveAllStatusMessages(@RequestParam String status){
+        return null;
+    }
 }
