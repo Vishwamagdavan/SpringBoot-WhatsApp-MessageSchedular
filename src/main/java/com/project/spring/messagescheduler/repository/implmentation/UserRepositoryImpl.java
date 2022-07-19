@@ -24,7 +24,7 @@ public class UserRepositoryImpl implements UserRepository {
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
-    private AuthenticationToken authenticationToken;
+    private final AuthenticationToken authenticationToken=new AuthenticationToken();
     @Override
     public User saveUser(User user) {
         String authToken=authenticationToken.generateAuthenticationToken();
@@ -51,5 +51,11 @@ public class UserRepositoryImpl implements UserRepository {
     @Override
     public String retrieveAuthToken(long userId) {
         return (String) jdbcTemplate.queryForObject("SELECT auth_token FROM users WHERE user_id=?",String.class,userId);
+    }
+
+    @Override
+    public boolean isValidUser(String authToken, Long userId) {
+        int rowsAffected=jdbcTemplate.queryForObject("SELECT * FROM users WHERE auth_token=? AND user_id=?",new Object[]{authToken,userId},Integer.class);
+        return rowsAffected>0;
     }
 }
