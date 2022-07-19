@@ -6,13 +6,26 @@ import com.project.spring.messagescheduler.repository.MessageRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class MessageService {
     @Autowired
     private MessageRepository repository;
     public Message saveMessage(MessageRequest messageRequest){
         Message message=Message.build(0,messageRequest.getMessageContent(),messageRequest.getUserId(),messageRequest.getPhoneNumber(),null,null,0,null,null);
-        repository.saveMessage(message);
-        return null;
+        return repository.saveMessage(message);
+    }
+
+    public Message retrieveMessage(Long messageId){
+        return repository.retrieveMessage(messageId);
+    }
+
+    public List<Message> retrieveAllMessage(Long userId){
+        return repository.retrieveAllMessages(userId);
+    }
+
+    public List<Message> retrieveByStatus(Long userId,int status){
+        return repository.retrieveMessageByStatus(userId,status);
     }
 }

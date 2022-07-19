@@ -7,5 +7,5 @@ public interface UserRepository {
     User findById(long userId);
     String retrieveAuthToken(long userId);
 
-    boolean isValidUser(String authToken, Long userId);
+    User isValidUser(String authToken, Long userId);
 }

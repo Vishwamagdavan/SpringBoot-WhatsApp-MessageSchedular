@@ -30,6 +30,7 @@ public class UserRepositoryImpl implements UserRepository {
         String authToken=authenticationToken.generateAuthenticationToken();
         String SQL_QUERY="INSERT INTO users (user_name,auth_token) VALUES (?,?)";
         KeyHolder holder=new GeneratedKeyHolder();
+
         jdbcTemplate.update(new PreparedStatementCreator() {
             @Override
             public PreparedStatement createPreparedStatement(Connection con) throws SQLException {
@@ -54,8 +55,7 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public boolean isValidUser(String authToken, Long userId) {
-        int rowsAffected=jdbcTemplate.queryForObject("SELECT * FROM users WHERE auth_token=? AND user_id=?",new Object[]{authToken,userId},Integer.class);
-        return rowsAffected>0;
+    public User isValidUser(String authToken, Long userId) {
+        return jdbcTemplate.queryForObject("SELECT * FROM users WHERE auth_token=? AND user_id=?",new BeanPropertyRowMapper<User>(User.class), authToken,userId);
     }
 }

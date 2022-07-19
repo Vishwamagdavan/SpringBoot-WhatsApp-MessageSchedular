@@ -1,5 +1,7 @@
 package com.project.spring.messagescheduler.advice;
 
+import com.project.spring.messagescheduler.exceptions.InputExceptions;
+import com.project.spring.messagescheduler.exceptions.RecordNotFoundException;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
@@ -21,9 +23,27 @@ public class ApplicationExceptionHandler {
         exception.getFieldErrors().forEach(errorMessage->errors.put(errorMessage.getField(),errorMessage.getDefaultMessage()));
         return errors;
     }
+
+
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(value = {DataAccessException.class, InvalidResultSetAccessException.class})
     public Map<String,String> handleDataLayerException(DataAccessException exception){
+        Map<String,String> errorMessage=new HashMap<>();
+        errorMessage.put("error",exception.getMessage());
+        return errorMessage;
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(value = {RecordNotFoundException.class})
+    public Map<String,String> handleResourceNotFoundException(RecordNotFoundException exception){
+        Map<String,String> errorMessage=new HashMap<>();
+        errorMessage.put("error",exception.getMessage());
+        return errorMessage;
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(value = {InputExceptions.class})
+    public Map<String,String> handleInputFoundException(InputExceptions exception){
         Map<String,String> errorMessage=new HashMap<>();
         errorMessage.put("error",exception.getMessage());
         return errorMessage;

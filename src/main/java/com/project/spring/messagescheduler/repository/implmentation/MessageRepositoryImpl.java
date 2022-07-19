@@ -24,7 +24,7 @@ public class MessageRepositoryImpl implements MessageRepository {
     private JdbcTemplate jdbcTemplate;
     @Override
     public Message saveMessage(Message message) {
-        String SQL_QUERY="INERT INTO messages(message_content,user_id,phone_number,scheduled_at,status,gupshup_message_id,sent_at) VALUES(?,?,?,?,?,?,?)";
+        String SQL_QUERY="INSERT INTO message(message_content,user_id,phone_number,scheduled_at,status) VALUES(?,?,?,?,?)";
         KeyHolder keyHolder=new GeneratedKeyHolder();
         jdbcTemplate.update(new PreparedStatementCreator() {
             @Override
@@ -34,8 +34,7 @@ public class MessageRepositoryImpl implements MessageRepository {
                 ps.setLong(2,message.getUserId());
                 ps.setString(3,message.getPhoneNumber());
                 ps.setTimestamp(4,message.getScheduledTime());
-                ps.setString(5, message.getGupshupMessageId());
-                ps.setTimestamp(6,message.getSentTime());
+                ps.setInt(5,message.getStatus());
                 return ps;
             }
         },keyHolder);
@@ -45,16 +44,16 @@ public class MessageRepositoryImpl implements MessageRepository {
 
     @Override
     public Message retrieveMessage(Long messageId) {
-        return jdbcTemplate.queryForObject("SELECT * FROM messages WHERE message_id=?",new BeanPropertyRowMapper<Message>(Message.class),messageId);
+        return jdbcTemplate.queryForObject("SELECT * FROM message WHERE message_id=?",new BeanPropertyRowMapper<>(Message.class),messageId);
     }
 
     @Override
     public List<Message> retrieveAllMessages(Long userId) {
-        return jdbcTemplate.query("SELECT * FROM messages WHERE user_id=?",new BeanPropertyRowMapper<>(Message.class),userId);
+        return jdbcTemplate.query("SELECT * FROM message WHERE user_id=?",new BeanPropertyRowMapper<>(Message.class),userId);
     }
 
     @Override
     public List<Message> retrieveMessageByStatus(Long userId,int status) {
-        return jdbcTemplate.query("SELECT * FROM messages WHERE user_id=? AND status=?",new BeanPropertyRowMapper<>(Message.class),userId,status);
+        return jdbcTemplate.query("SELECT * FROM message WHERE user_id=? AND status=?",new BeanPropertyRowMapper<>(Message.class),userId,status);
     }
 }
