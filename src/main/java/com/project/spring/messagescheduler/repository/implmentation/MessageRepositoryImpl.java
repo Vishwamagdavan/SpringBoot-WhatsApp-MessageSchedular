@@ -1,7 +1,6 @@
 package com.project.spring.messagescheduler.repository.implmentation;
 
 import com.project.spring.messagescheduler.entity.Message;
-import com.project.spring.messagescheduler.entity.User;
 import com.project.spring.messagescheduler.repository.MessageRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
@@ -33,13 +32,13 @@ public class MessageRepositoryImpl implements MessageRepository {
                 ps.setString(1,message.getMessageContent());
                 ps.setLong(2,message.getUserId());
                 ps.setString(3,message.getPhoneNumber());
-                ps.setTimestamp(4,message.getScheduledTime());
+                ps.setTimestamp(4,message.getScheduledAt());
                 ps.setInt(5,message.getStatus());
                 return ps;
             }
         },keyHolder);
         Long messageId= Objects.requireNonNull(keyHolder.getKey()).longValue();
-        return this.retrieveMessage(messageId);
+        return retrieveMessage(messageId);
     }
 
     @Override
@@ -48,12 +47,17 @@ public class MessageRepositoryImpl implements MessageRepository {
     }
 
     @Override
-    public List<Message> retrieveAllMessages(Long userId) {
+    public List<Message> retrieveAllMessagesById(Long userId) {
         return jdbcTemplate.query("SELECT * FROM message WHERE user_id=?",new BeanPropertyRowMapper<>(Message.class),userId);
     }
 
     @Override
     public List<Message> retrieveMessageByStatus(Long userId,int status) {
         return jdbcTemplate.query("SELECT * FROM message WHERE user_id=? AND status=?",new BeanPropertyRowMapper<>(Message.class),userId,status);
+    }
+
+    @Override
+    public List<Message> retrieveAllMessages() {
+        return jdbcTemplate.query("SELECT * FROM message WHERE status=0 OR status=1 ORDER BY status DESC",new BeanPropertyRowMapper<>(Message.class));
     }
 }

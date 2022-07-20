@@ -14,9 +14,9 @@ public class Message {
     private String messageContent;
     private long userId;
     private String phoneNumber;
-    private Timestamp createdTime;
-    private Timestamp scheduledTime;
+    private Timestamp createdAt;
+    private Timestamp scheduledAt;
     private int status;
     private String gupshupMessageId;
-    private Timestamp sentTime;
+    private Timestamp sentAt;
 }

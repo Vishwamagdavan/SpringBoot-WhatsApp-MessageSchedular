@@ -13,7 +13,7 @@ public class MessageService {
     @Autowired
     private MessageRepository repository;
     public Message saveMessage(MessageRequest messageRequest){
-        Message message=Message.build(0,messageRequest.getMessageContent(),messageRequest.getUserId(),messageRequest.getPhoneNumber(),null,null,0,null,null);
+        Message message=Message.build(0,messageRequest.getMessageContent(),messageRequest.getUserId(),messageRequest.getPhoneNumber(),null,messageRequest.getScheduledTime(),0,null,null);
         return repository.saveMessage(message);
     }
 
@@ -22,7 +22,7 @@ public class MessageService {
     }
 
     public List<Message> retrieveAllMessage(Long userId){
-        return repository.retrieveAllMessages(userId);
+        return repository.retrieveAllMessagesById(userId);
     }
 
     public List<Message> retrieveByStatus(Long userId,int status){
