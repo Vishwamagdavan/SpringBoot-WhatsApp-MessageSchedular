@@ -5,6 +5,7 @@ import com.project.spring.messagescheduler.repository.MessageRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.text.SimpleDateFormat;
@@ -14,6 +15,11 @@ import java.util.TimerTask;
 
 @Component
 public class MessageSchedulerTask extends TimerTask {
+    /*
+    Fetching value from the application.properties
+     */
+    @Value("${gupshup.service.url}")
+    private String targetURl;
     @Autowired
     private MessageRepository messageRepository;
     Logger logger= LoggerFactory.getLogger(MessageSchedulerTask.class);
@@ -46,7 +52,7 @@ public class MessageSchedulerTask extends TimerTask {
             throw new RuntimeException(e);
         }
         for(Message message: messages){
-            System.out.println("Timer is working");
+            System.out.println("Message:"+ message.getMessageContent());
         }
         logger.info("Java cron job expression:: " + strDate);
     }
