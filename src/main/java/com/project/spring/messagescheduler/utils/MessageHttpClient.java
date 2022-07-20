@@ -1,0 +1,75 @@
+package com.project.spring.messagescheduler.utils;
+
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import com.project.spring.messagescheduler.entity.Message;
+import com.squareup.okhttp.*;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
+
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+@Component
+public class MessageHttpClient {
+
+    /*
+    Fetching value from the application.properties
+     */
+    @Value("${gupshup.service.url}")
+    private String END_POINT;
+    @Value("${gupshup.service.apikey}")
+    private String API_KEY;
+
+    @Value("${gupshup.service.sourcenumber}")
+    private String SOURCE_NUMBER;
+    @Value("${gupshup.service.appname}")
+    private String APP_NAME;
+
+    @Autowired
+    private ApplicationParser applicationParser;
+
+    public ResponseBody httpClientPostRequest(Message message){
+        Gson gson=new Gson();
+        OkHttpClient client = new OkHttpClient();
+        HashMap<String,Object> bodyObject=new HashMap<>();
+        bodyObject.put("channel","whatsapp");
+        bodyObject.put("source",SOURCE_NUMBER);
+        bodyObject.put("destination",message.getPhoneNumber());
+
+
+        HashMap<String,String> messageBodyObject=new HashMap<>();
+        messageBodyObject.put("type","text");
+        messageBodyObject.put("text",message.getMessageContent());
+        String msgObjString=gson.toJson(messageBodyObject);
+        JsonObject msgObject = JsonParser.parseString(msgObjString).getAsJsonObject();
+
+        bodyObject.put("message",msgObject);
+        bodyObject.put("src.name",APP_NAME);
+        bodyObject.put("displayPreview",false);
+        String bodyContent=applicationParser.bodyParser(bodyObject);
+
+        MediaType mediaType = MediaType.parse("application/x-www-form-urlencoded");
+        RequestBody body = RequestBody.create(mediaType, bodyContent);
+        Request request = new Request.Builder()
+                .url(END_POINT)
+                .post(body)
+                .addHeader("Accept", "application/json")
+                .addHeader("Content-Type", "application/x-www-form-urlencoded")
+                .addHeader("apikey",API_KEY)
+                .build();
+        Response response=null;
+        try {
+            response = client.newCall(request).execute();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        return response.body();
+    }
+}

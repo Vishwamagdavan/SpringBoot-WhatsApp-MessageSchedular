@@ -12,4 +12,6 @@ public interface MessageRepository {
     List<Message> retrieveMessageByStatus(Long userId,int status);
 
     List<Message> retrieveAllMessages();
+
+    int updateStatus(Message message);
 }

@@ -2,6 +2,8 @@ package com.project.spring.messagescheduler.repository.implmentation;
 
 import com.project.spring.messagescheduler.entity.Message;
 import com.project.spring.messagescheduler.repository.MessageRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -10,15 +12,13 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.List;
 import java.util.Objects;
 
 @Repository
 public class MessageRepositoryImpl implements MessageRepository {
+    private Logger logger= LoggerFactory.getLogger(MessageRepositoryImpl.class);
     @Autowired
     private JdbcTemplate jdbcTemplate;
     @Override
@@ -59,5 +59,12 @@ public class MessageRepositoryImpl implements MessageRepository {
     @Override
     public List<Message> retrieveAllMessages() {
         return jdbcTemplate.query("SELECT * FROM message WHERE status=0 OR status=1 ORDER BY status DESC",new BeanPropertyRowMapper<>(Message.class));
+    }
+
+    @Override
+    public int updateStatus(Message message) {
+        logger.info(message.toString());
+        String sql="UPDATE message SET gupshup_message_id=?,status=?,sent_at=? WHERE message_id=?";
+        return jdbcTemplate.update(sql,message.getGupshupMessageId(),message.getStatus(),message.getSentAt(),message.getMessageId());
     }
 }

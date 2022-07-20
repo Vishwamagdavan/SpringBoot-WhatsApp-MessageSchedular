@@ -2,27 +2,27 @@ package com.project.spring.messagescheduler.utils;
 
 import com.project.spring.messagescheduler.entity.Message;
 import com.project.spring.messagescheduler.repository.MessageRepository;
+import com.squareup.okhttp.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
-import java.util.TimerTask;
+import java.io.IOException;
+import java.sql.Timestamp;
+import java.time.Instant;
+import java.util.*;
 
 @Component
 public class MessageSchedulerTask extends TimerTask {
-    /*
-    Fetching value from the application.properties
-     */
-    @Value("${gupshup.service.url}")
-    private String targetURl;
+
+    @Autowired
+    private MessageHttpClient httpCall;
+    @Autowired
+    private ApplicationParser applicationParser;
     @Autowired
     private MessageRepository messageRepository;
-    Logger logger= LoggerFactory.getLogger(MessageSchedulerTask.class);
+    private Logger logger= LoggerFactory.getLogger(MessageSchedulerTask.class);
 
     List<Message> pollFromDatabase() throws Exception {
         List<Message> messageGroup=messageRepository.retrieveAllMessages();
@@ -31,20 +31,8 @@ public class MessageSchedulerTask extends TimerTask {
         return messageGroup;
     }
 
-    public void scheduleMessage() throws Exception {
-
-    }
-
-    public void webRequestToGupshupAPI(){
-        
-    }
-
     @Override
     public void run() {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
-        Date now = new Date();
-        String strDate = sdf.format(now);
-
         List<Message> messages= null;
         try {
             messages = pollFromDatabase();
@@ -52,8 +40,18 @@ public class MessageSchedulerTask extends TimerTask {
             throw new RuntimeException(e);
         }
         for(Message message: messages){
-            System.out.println("Message:"+ message.getMessageContent());
+            ResponseBody responseBody=httpCall.httpClientPostRequest(message);
+            HashMap<String,Object> result= null;
+            try {
+                result = applicationParser.convertStringToObject(responseBody.string());
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            message.setGupshupMessageId(String.valueOf(result.get("messageId")));
+            message.setStatus(2);
+            message.setSentAt(Timestamp.from(Instant.now()));
+            messageRepository.updateStatus(message);
+            logger.info(message.toString());
         }
-        logger.info("Java cron job expression:: " + strDate);
     }
 }
