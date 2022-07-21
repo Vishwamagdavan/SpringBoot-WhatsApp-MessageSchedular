@@ -48,12 +48,12 @@ public class LoggingAdvice {
     @Around("springPointCut() && applicationPointcut()")
     public Object applicationLogger(ProceedingJoinPoint joinPoint) throws Throwable {
         if(logger.isDebugEnabled()){
-            logger.debug("Enter:{}.{}() with arguments",joinPoint.getSignature().getDeclaringTypeName(),joinPoint.getSignature().getName(), Arrays.toString(joinPoint.getArgs()));
+            logger.debug("Enter:{}.{}() with arguments {}",joinPoint.getSignature().getDeclaringTypeName(),joinPoint.getSignature().getName(), Arrays.toString(joinPoint.getArgs()));
         }
         try {
             Object result=joinPoint.proceed();
             if(logger.isDebugEnabled()){
-                logger.debug("Exit:{}.{}() with result",joinPoint.getSignature().getDeclaringTypeName(),joinPoint.getSignature().getName(), result.toString());
+                logger.debug("Exit:{}.{}() with result {}",joinPoint.getSignature().getDeclaringTypeName(),joinPoint.getSignature().getName(), result.toString());
             }
             return result;
         }catch (IllegalArgumentException e) {

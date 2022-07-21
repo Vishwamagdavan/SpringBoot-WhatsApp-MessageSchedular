@@ -46,14 +46,18 @@ public class MessageSchedulerTask extends TimerTask {
             HashMap<String,Object> result= null;
             try {
                 result = applicationParser.convertStringToObject(responseBody.string());
+                message.setGupshupMessageId(String.valueOf(result.get("messageId")));
+                message.setStatus(2);
+                message.setSentAt(Timestamp.from(Instant.now()));
+                messageRepository.updateStatus(message);
+                logger.info(message.toString());
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
-            message.setGupshupMessageId(String.valueOf(result.get("messageId")));
-            message.setStatus(2);
-            message.setSentAt(Timestamp.from(Instant.now()));
-            messageRepository.updateStatus(message);
-            logger.info(message.toString());
+            catch (NullPointerException nullPointerException){
+                logger.info("Failed to Connect API");
+            }
+
         }
     }
 }

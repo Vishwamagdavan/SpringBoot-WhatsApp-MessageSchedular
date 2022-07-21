@@ -1,5 +1,6 @@
 package com.project.spring.messagescheduler.advice;
 
+import com.project.spring.messagescheduler.exceptions.AuthFailedException;
 import com.project.spring.messagescheduler.exceptions.ErrorDetails;
 import com.project.spring.messagescheduler.exceptions.InputExceptions;
 import com.project.spring.messagescheduler.exceptions.ResourceNotFoundException;
@@ -76,5 +77,12 @@ public class ApplicationExceptionHandler {
         Map<String,String> errorMessage=new HashMap<>();
         errorMessage.put("error",exception.getMessage());
         return errorMessage;
+    }
+
+    @ExceptionHandler(AuthFailedException.class)
+    public ResponseEntity<?> authException(AuthFailedException ex, WebRequest request) {
+        System.out.println("HERE");
+        ErrorDetails errorDetails = new ErrorDetails(new Date(), ex.getMessage(), request.getDescription(false));
+        return new ResponseEntity<>(errorDetails, HttpStatus.BAD_REQUEST);
     }
 }

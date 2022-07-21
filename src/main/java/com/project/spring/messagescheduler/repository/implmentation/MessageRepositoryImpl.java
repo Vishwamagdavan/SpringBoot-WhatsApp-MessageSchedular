@@ -1,9 +1,9 @@
 package com.project.spring.messagescheduler.repository.implmentation;
 
 import com.project.spring.messagescheduler.entity.Message;
+import com.project.spring.messagescheduler.entity.User;
+import com.project.spring.messagescheduler.exceptions.ResourceNotFoundException;
 import com.project.spring.messagescheduler.repository.MessageRepository;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.InvalidResultSetAccessException;
@@ -20,16 +20,14 @@ import java.util.Objects;
 
 @Repository
 public class MessageRepositoryImpl implements MessageRepository {
-    private Logger logger= LoggerFactory.getLogger(MessageRepositoryImpl.class);
     @Autowired
     private JdbcTemplate jdbcTemplate;
     @Override
-    public Message saveMessage(Message message) {
+    public Message saveMessage(Message message) throws ResourceNotFoundException {
         String SQL_QUERY="INSERT INTO message(message_content,user_id,phone_number,scheduled_at,status) VALUES(?,?,?,?,?)";
         KeyHolder keyHolder=new GeneratedKeyHolder();
-        jdbcTemplate.update(new PreparedStatementCreator() {
-            @Override
-            public PreparedStatement createPreparedStatement(Connection con) throws SQLException {
+        try {
+            jdbcTemplate.update(con -> {
                 PreparedStatement ps= con.prepareStatement(SQL_QUERY, Statement.RETURN_GENERATED_KEYS);
                 ps.setString(1,message.getMessageContent());
                 ps.setLong(2,message.getUserId());
@@ -37,15 +35,21 @@ public class MessageRepositoryImpl implements MessageRepository {
                 ps.setTimestamp(4,message.getScheduledAt());
                 ps.setInt(5,message.getStatus());
                 return ps;
-            }
-        },keyHolder);
+            },keyHolder);
+        }catch (DataAccessException exception){
+            throw new ResourceNotFoundException("something went wrong please try again");
+        }
+        catch (Exception exception){
+            throw new RuntimeException("Something went wrong");
+        }
+
         Long messageId= Objects.requireNonNull(keyHolder.getKey()).longValue();
         return retrieveMessage(messageId);
     }
 
     @Override
     public Message retrieveMessage(Long messageId) {
-        Message message=null;
+        Message message;
         try {
             message=jdbcTemplate.queryForObject("SELECT * FROM message WHERE message_id=?",new BeanPropertyRowMapper<>(Message.class),messageId);
         }catch (InvalidResultSetAccessException exception) {
@@ -58,24 +62,55 @@ public class MessageRepositoryImpl implements MessageRepository {
     }
 
     @Override
-    public List<Message> retrieveAllMessagesById(Long userId) {
-        return jdbcTemplate.query("SELECT * FROM message WHERE user_id=?",new BeanPropertyRowMapper<>(Message.class),userId);
+    public List<Message> retrieveAllMessagesById(Long userId) throws ResourceNotFoundException {
+        List<Message> result;
+        try {
+            result=jdbcTemplate.query("SELECT * FROM message WHERE user_id=?",new BeanPropertyRowMapper<>(Message.class),userId);
+        }catch (DataAccessException exception){
+            throw new ResourceNotFoundException("Cannot fetch message list with id:"+userId);
+        }
+        catch (Exception exception){
+            throw new RuntimeException("Something went wrong");
+        }
+        return result;
     }
 
     @Override
-    public List<Message> retrieveMessageByStatus(Long userId,int status) {
-        return jdbcTemplate.query("SELECT * FROM message WHERE user_id=? AND status=?",new BeanPropertyRowMapper<>(Message.class),userId,status);
+    public List<Message> retrieveMessageByStatus(Long userId,int status) throws ResourceNotFoundException {
+        List<Message> result;
+        try {
+            result=jdbcTemplate.query("SELECT * FROM message WHERE user_id=? AND status=?",new BeanPropertyRowMapper<>(Message.class),userId,status);
+        }catch (DataAccessException exception){
+            throw new ResourceNotFoundException("Cannot fetch message list with id:"+userId);
+        }
+        catch (Exception exception){
+            throw new RuntimeException("Something went wrong");
+        }
+        return result;
     }
 
     @Override
-    public List<Message> retrieveAllMessages() {
-        return jdbcTemplate.query("SELECT * FROM message WHERE (status=0 OR status=1) AND  DATE_ADD(NOW(),INTERVAL 10 MINUTE)>scheduled_at ORDER BY scheduled_at ASC,status DESC",new BeanPropertyRowMapper<>(Message.class));
+    public List<Message> retrieveAllMessages() throws ResourceNotFoundException {
+        List<Message> result;
+        try {
+            result=jdbcTemplate.query("SELECT * FROM message WHERE (status=0 OR status=1) AND  DATE_ADD(NOW(),INTERVAL 10 MINUTE)>scheduled_at ORDER BY scheduled_at ASC,status DESC",new BeanPropertyRowMapper<>(Message.class));
+        }catch (DataAccessException exception){
+            throw new ResourceNotFoundException("failed to fetching the message");
+        }
+        catch (Exception exception){
+            throw new RuntimeException("Something went wrong");
+        }
+        return result;
     }
 
     @Override
     public int updateStatus(Message message) {
-        logger.info(message.toString());
-        String sql="UPDATE message SET gupshup_message_id=?,status=?,sent_at=? WHERE message_id=?";
-        return jdbcTemplate.update(sql,message.getGupshupMessageId(),message.getStatus(),message.getSentAt(),message.getMessageId());
+        try {
+            String sql="UPDATE message SET gupshup_message_id=?,status=?,sent_at=? WHERE message_id=?";
+            return jdbcTemplate.update(sql,message.getGupshupMessageId(),message.getStatus(),message.getSentAt(),message.getMessageId());
+        }
+        catch (Exception exception){
+            throw new RuntimeException("Failed to update the message"+exception);
+        }
     }
 }

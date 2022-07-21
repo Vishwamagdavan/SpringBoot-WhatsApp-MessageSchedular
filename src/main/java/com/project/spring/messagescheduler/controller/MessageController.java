@@ -4,6 +4,7 @@ import com.project.spring.messagescheduler.dto.MessageRequest;
 import com.project.spring.messagescheduler.entity.Message;
 import com.project.spring.messagescheduler.exceptions.AuthFailedException;
 import com.project.spring.messagescheduler.exceptions.InputExceptions;
+import com.project.spring.messagescheduler.exceptions.ResourceNotFoundException;
 import com.project.spring.messagescheduler.service.AuthRequest;
 import com.project.spring.messagescheduler.service.MessageService;
 import com.project.spring.messagescheduler.utils.StatusUtil;
@@ -35,7 +36,7 @@ public class MessageController {
 
     @PostMapping("/text")
     @ResponseBody
-    public ResponseEntity<Message> sendMessageToClient(@RequestHeader(value ="auth_token", required = true) String authToken,@RequestBody MessageRequest messageRequest) throws AuthFailedException {
+    public ResponseEntity<Message> sendMessageToClient(@RequestHeader(value ="auth_token", required = true) String authToken,@RequestBody MessageRequest messageRequest) throws AuthFailedException, ResourceNotFoundException {
         logger.info(authToken);
         if(!authRequest.isValidUser(authToken, (long) messageRequest.getUserId())){
             throw new AuthFailedException("Invalid User");
@@ -44,7 +45,7 @@ public class MessageController {
     }
 
     @GetMapping("/message/{id}")
-    public ResponseEntity<Message> retrieveMessageData(@RequestHeader("auth_token") String authToken,@PathVariable Long id,@RequestParam("messageId") Long messageId) throws AuthFailedException {
+    public ResponseEntity<Message> retrieveMessageData(@RequestHeader("auth_token") String authToken,@PathVariable Long id,@RequestParam("messageId") Long messageId) throws AuthFailedException, ResourceNotFoundException {
         if(!authRequest.isValidUser(authToken,id)){
             throw new AuthFailedException("Invalid User");
         }
@@ -52,7 +53,7 @@ public class MessageController {
     }
 
     @GetMapping("/allmessages/{userId}")
-    public ResponseEntity<List<Message>> retrieveAllMessages(@RequestHeader("auth_token") String authToken,@PathVariable Long userId) throws AuthFailedException {
+    public ResponseEntity<List<Message>> retrieveAllMessages(@RequestHeader("auth_token") String authToken,@PathVariable Long userId) throws AuthFailedException, ResourceNotFoundException {
         if(!authRequest.isValidUser(authToken,userId)){
             throw new AuthFailedException("Invalid User");
         }
@@ -60,7 +61,7 @@ public class MessageController {
     }
 
     @GetMapping("/message/{userId}/{status}")
-    public ResponseEntity<List<Message>> retrieveAllStatusMessages(@RequestHeader("auth_token") String authToken,@PathVariable Long userId,@PathVariable String status) throws AuthFailedException, InputExceptions {
+    public ResponseEntity<List<Message>> retrieveAllStatusMessages(@RequestHeader("auth_token") String authToken,@PathVariable Long userId,@PathVariable String status) throws AuthFailedException, InputExceptions, ResourceNotFoundException {
         if(!authRequest.isValidUser(authToken,userId)){
             throw new AuthFailedException("Invalid User");
         }
