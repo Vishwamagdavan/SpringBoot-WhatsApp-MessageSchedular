@@ -1,5 +1,7 @@
 package com.project.spring.messagescheduler.dto;
 
+import com.project.spring.messagescheduler.annotations.CustomDate;
+import com.project.spring.messagescheduler.annotations.PhoneNumber;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -17,7 +19,8 @@ public class MessageRequest {
     @NotNull(message = "Please provide user name")
     private int userId;
     @NotNull(message = "Please provide Phone number")
-    @Pattern(regexp = "^\\+[1-9]{1}[0-9]{3,14}$",message = "Enter valid phone number")
+    @PhoneNumber
     private String phoneNumber;
+    @CustomDate
     private Timestamp scheduledTime;
 }
