@@ -6,7 +6,7 @@ import org.springframework.context.annotation.Configuration;
 import java.util.Timer;
 
 @Configuration
-public class Config {
+public class ApplicationConfig {
     @Bean
     public Timer getTimer(){
         return new Timer();

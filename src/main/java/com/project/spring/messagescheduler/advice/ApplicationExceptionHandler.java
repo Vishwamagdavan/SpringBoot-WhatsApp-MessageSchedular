@@ -1,46 +1,75 @@
 package com.project.spring.messagescheduler.advice;
 
+import com.project.spring.messagescheduler.exceptions.ErrorDetails;
 import com.project.spring.messagescheduler.exceptions.InputExceptions;
-import com.project.spring.messagescheduler.exceptions.RecordNotFoundException;
-import org.springframework.dao.DataAccessException;
+import com.project.spring.messagescheduler.exceptions.ResourceNotFoundException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
-import org.springframework.jdbc.InvalidResultSetAccessException;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.context.request.WebRequest;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
 @ControllerAdvice
 public class ApplicationExceptionHandler {
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
+
+    /**
+     * Runtime Exception - Handles all the exception during runtime
+     * @param exception
+     * @return
+     */
+    @ExceptionHandler(value = {RuntimeException.class})
+    public ResponseEntity<?> handleRunTimeException(RuntimeException exception,WebRequest request){
+        ErrorDetails errorDetails = new ErrorDetails(new Date(), exception.getMessage(), request.getDescription(false));
+        return new ResponseEntity<>(errorDetails,HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    /**
+     * When the data fetching is fails, this method gives user with error.
+     * @param ex
+     * @param request
+     * @return
+     */
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public ResponseEntity<?> resourceNotFoundException(ResourceNotFoundException ex, WebRequest request) {
+        ErrorDetails errorDetails = new ErrorDetails(new Date(), ex.getMessage(), request.getDescription(false));
+        return new ResponseEntity<>(errorDetails, HttpStatus.NOT_FOUND);
+    }
+
+    /**
+     * Sends the response with INTERNAL_SERVER_ERROR for other unhandled exceptions
+     * @param ex
+     * @param request
+     * @return
+     */
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<?> globalExceptionHandler(Exception ex, WebRequest request) {
+        ErrorDetails errorDetails = new ErrorDetails(new Date(), ex.getMessage(), request.getDescription(false));
+        return new ResponseEntity<>(errorDetails, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    /**
+     * handles Invalid argument passed by the user in the request body
+     * @param exception
+     * @return
+     */
     @ExceptionHandler(value = {MethodArgumentNotValidException.class, DataIntegrityViolationException.class})
-    public Map<String,String> handleInvalidArgument(MethodArgumentNotValidException exception){
-        Map<String,String> errors=new HashMap<>();
-        exception.getFieldErrors().forEach(errorMessage->errors.put(errorMessage.getField(),errorMessage.getDefaultMessage()));
-        return errors;
+    public ResponseEntity<?> handleInvalidArgument(MethodArgumentNotValidException exception,WebRequest request){
+        ErrorDetails errorDetails = new ErrorDetails(new Date(), exception.getMessage(), request.getDescription(false));
+        return new ResponseEntity<>(errorDetails, HttpStatus.BAD_REQUEST);
     }
 
-
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    @ExceptionHandler(value = {DataAccessException.class, InvalidResultSetAccessException.class})
-    public Map<String,String> handleDataLayerException(DataAccessException exception){
-        Map<String,String> errorMessage=new HashMap<>();
-        errorMessage.put("error",exception.getMessage());
-        return errorMessage;
-    }
-
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ExceptionHandler(value = {RecordNotFoundException.class})
-    public Map<String,String> handleResourceNotFoundException(RecordNotFoundException exception){
-        Map<String,String> errorMessage=new HashMap<>();
-        errorMessage.put("error",exception.getMessage());
-        return errorMessage;
-    }
-
+    /**
+     * Handles other input exceptions
+     * @param exception
+     * @return
+     */
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(value = {InputExceptions.class})
     public Map<String,String> handleInputFoundException(InputExceptions exception){

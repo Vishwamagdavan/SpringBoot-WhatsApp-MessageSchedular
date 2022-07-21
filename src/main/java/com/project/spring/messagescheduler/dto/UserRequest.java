@@ -12,5 +12,4 @@ import javax.validation.constraints.NotNull;
 public class UserRequest {
     @NotNull(message="Username cannot be not null")
     private String userName;
-    private String authToken;
 }

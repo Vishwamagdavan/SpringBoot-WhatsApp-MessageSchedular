@@ -5,6 +5,8 @@ import com.project.spring.messagescheduler.repository.MessageRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
+import org.springframework.jdbc.InvalidResultSetAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementCreator;
@@ -43,7 +45,16 @@ public class MessageRepositoryImpl implements MessageRepository {
 
     @Override
     public Message retrieveMessage(Long messageId) {
-        return jdbcTemplate.queryForObject("SELECT * FROM message WHERE message_id=?",new BeanPropertyRowMapper<>(Message.class),messageId);
+        Message message=null;
+        try {
+            message=jdbcTemplate.queryForObject("SELECT * FROM message WHERE message_id=?",new BeanPropertyRowMapper<>(Message.class),messageId);
+        }catch (InvalidResultSetAccessException exception) {
+            throw new RuntimeException("Something went wrong");
+        }
+        catch (DataAccessException exception){
+            throw  new RuntimeException("");
+        }
+        return message;
     }
 
     @Override
@@ -58,7 +69,7 @@ public class MessageRepositoryImpl implements MessageRepository {
 
     @Override
     public List<Message> retrieveAllMessages() {
-        return jdbcTemplate.query("SELECT * FROM message WHERE status=0 OR status=1 ORDER BY status DESC",new BeanPropertyRowMapper<>(Message.class));
+        return jdbcTemplate.query("SELECT * FROM message WHERE (status=0 OR status=1) AND  DATE_ADD(NOW(),INTERVAL 10 MINUTE)>scheduled_at ORDER BY scheduled_at ASC,status DESC",new BeanPropertyRowMapper<>(Message.class));
     }
 
     @Override

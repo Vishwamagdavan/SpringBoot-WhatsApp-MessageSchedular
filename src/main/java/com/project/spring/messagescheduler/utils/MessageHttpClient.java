@@ -18,10 +18,12 @@ import java.util.Map;
 
 @Component
 public class MessageHttpClient {
+    public MessageHttpClient() {
+    }
 
     /*
-    Fetching value from the application.properties
-     */
+        Fetching value from the application.properties
+         */
     @Value("${gupshup.service.url}")
     private String END_POINT;
     @Value("${gupshup.service.apikey}")

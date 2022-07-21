@@ -5,7 +5,6 @@ import com.project.spring.messagescheduler.repository.MessageRepository;
 import com.squareup.okhttp.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
@@ -16,13 +15,16 @@ import java.util.*;
 @Component
 public class MessageSchedulerTask extends TimerTask {
 
-    @Autowired
-    private MessageHttpClient httpCall;
-    @Autowired
-    private ApplicationParser applicationParser;
-    @Autowired
-    private MessageRepository messageRepository;
-    private Logger logger= LoggerFactory.getLogger(MessageSchedulerTask.class);
+    private final MessageHttpClient httpCall;
+    private final ApplicationParser applicationParser;
+    private final MessageRepository messageRepository;
+    private final Logger logger= LoggerFactory.getLogger(MessageSchedulerTask.class);
+
+    public MessageSchedulerTask(MessageHttpClient httpCall, ApplicationParser applicationParser, MessageRepository messageRepository) {
+        this.httpCall = httpCall;
+        this.applicationParser = applicationParser;
+        this.messageRepository = messageRepository;
+    }
 
     List<Message> pollFromDatabase() throws Exception {
         List<Message> messageGroup=messageRepository.retrieveAllMessages();
