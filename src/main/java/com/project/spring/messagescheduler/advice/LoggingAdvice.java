@@ -50,17 +50,23 @@ public class LoggingAdvice {
         if(logger.isDebugEnabled()){
             logger.debug("Enter:{}.{}() with arguments {}",joinPoint.getSignature().getDeclaringTypeName(),joinPoint.getSignature().getName(), Arrays.toString(joinPoint.getArgs()));
         }
+        Object result;
         try {
-            Object result=joinPoint.proceed();
+            result=joinPoint.proceed();
             if(logger.isDebugEnabled()){
                 logger.debug("Exit:{}.{}() with result {}",joinPoint.getSignature().getDeclaringTypeName(),joinPoint.getSignature().getName(), result.toString());
             }
-            return result;
         }catch (IllegalArgumentException e) {
             logger.error("Illegal argument: {} in {}.{}()", Arrays.toString(joinPoint.getArgs()),
                     joinPoint.getSignature().getDeclaringTypeName(), joinPoint.getSignature().getName());
             throw e;
         }
+        catch (NullPointerException e){
+//            e.printStackTrace();
+            throw e;
+        }
+        return result;
+
     }
 
     @AfterThrowing(pointcut = "springPointCut() && applicationPointcut()", throwing = "e")

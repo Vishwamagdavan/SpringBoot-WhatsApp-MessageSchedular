@@ -16,6 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/message")
@@ -41,7 +42,11 @@ public class MessageController {
         if(!authRequest.isValidUser(authToken, (long) messageRequest.getUserId())){
             throw new AuthFailedException("Invalid User");
         }
-        return new ResponseEntity<>(service.saveMessage(messageRequest),HttpStatus.ACCEPTED);
+        Optional<Message> message=service.saveMessage(messageRequest);
+        if(!message.isPresent()){
+            throw new ResourceNotFoundException("Something went wrong");
+        }
+        return new ResponseEntity<>(message.get(),HttpStatus.CREATED);
     }
 
     @GetMapping("/message/{id}")

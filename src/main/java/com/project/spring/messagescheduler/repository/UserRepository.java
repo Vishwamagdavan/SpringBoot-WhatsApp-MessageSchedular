@@ -4,9 +4,10 @@ import com.project.spring.messagescheduler.entity.User;
 import com.project.spring.messagescheduler.exceptions.ResourceNotFoundException;
 
 import javax.management.relation.RelationServiceNotRegisteredException;
+import java.util.Optional;
 
 public interface UserRepository {
-    User saveUser(User user) throws ResourceNotFoundException;
+    Optional<User> saveUser(User user) throws ResourceNotFoundException;
     User findById(long userId) throws RelationServiceNotRegisteredException, ResourceNotFoundException;
     String retrieveAuthToken(long userId) throws ResourceNotFoundException;
 

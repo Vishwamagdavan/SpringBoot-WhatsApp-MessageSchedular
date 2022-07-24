@@ -63,4 +63,14 @@ public class ApplicationParser {
         JsonObject jsonObject=JsonParser.parseString(data).getAsJsonObject();
         return new Gson().fromJson(jsonObject, HashMap.class);
     }
+
+    /**
+     * Removes extra space and other symbols
+     * @param phoneNumber
+     * @return
+     */
+    public String parsePhoneNumber(String phoneNumber){
+        phoneNumber=phoneNumber.replaceAll("[\\s\\-\\+]","");
+        return phoneNumber;
+    }
 }

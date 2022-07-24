@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import javax.validation.constraints.Null;
 import java.sql.Timestamp;
 import java.time.Instant;
 
@@ -19,11 +20,24 @@ class MessageRepositoryImplTest {
     private MessageRepositoryImpl messageRepository;
 
     private final Logger logger= LoggerFactory.getLogger(MessageRepositoryImplTest.class);
+
     @Test
     void saveMessage() throws ResourceNotFoundException {
-        Message message=Message.build(0,"Testing for Message Repository",8,"919952862652",null,null,0,null,null);
+        Message message=Message.build(0,"Testing for Message Repository",8,"919952862652",Timestamp.from(Instant.now()),Timestamp.from(Instant.now()),0,null,null);
         Message result=messageRepository.saveMessage(message);
         assertNotNull(result);
+        assertEquals(result.getStatus(),0);
+    }
+
+    @Test
+    void saveMesssageWhenNull() throws ResourceNotFoundException {
+        try {
+            Message result=messageRepository.saveMessage(null);
+            assertNull(result);
+
+        }
+        catch (NullPointerException ex){
+        }
     }
 
     @Test

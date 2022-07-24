@@ -1,13 +1,26 @@
 package com.project.spring.messagescheduler.annotations.validators;
 
 import com.project.spring.messagescheduler.annotations.PhoneNumber;
+import com.project.spring.messagescheduler.utils.ApplicationParser;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class PhoneNumberValidator implements ConstraintValidator<PhoneNumber,String> {
+    private final ApplicationParser applicationParser;
+
+    public PhoneNumberValidator(ApplicationParser applicationParser) {
+        this.applicationParser = applicationParser;
+    }
+
     @Override
     public boolean isValid(String s, ConstraintValidatorContext constraintValidatorContext) {
-        return true;
+        // Removing the extra space, + and - sign
+        String phoneNumber=applicationParser.parsePhoneNumber(s);
+        Pattern pattern = Pattern.compile("(0/91)?[6-9][0-9]{9}");
+        Matcher match = pattern.matcher(phoneNumber);
+        return (match.find() && match.group().equals(phoneNumber));
     }
 }

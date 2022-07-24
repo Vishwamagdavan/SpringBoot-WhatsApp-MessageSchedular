@@ -16,6 +16,7 @@ import org.springframework.stereotype.Repository;
 
 import java.sql.*;
 import java.util.Objects;
+import java.util.Optional;
 
 @Repository
 public class UserRepositoryImpl implements UserRepository {
@@ -24,7 +25,10 @@ public class UserRepositoryImpl implements UserRepository {
 
     private final AuthenticationToken authenticationToken=new AuthenticationToken();
     @Override
-    public User saveUser(User user) throws ResourceNotFoundException {
+    public Optional<User> saveUser(User user) throws ResourceNotFoundException {
+        if(user==null){
+            throw new NullPointerException("User object cannot be null");
+        }
         String authToken=authenticationToken.generateAuthenticationToken();
         String SQL_QUERY="INSERT INTO users (user_name,auth_token) VALUES (?,?)";
         KeyHolder holder=new GeneratedKeyHolder();
@@ -40,7 +44,7 @@ public class UserRepositoryImpl implements UserRepository {
             throw new RuntimeException("Problem in saving the data");
         }
         int userId= Objects.requireNonNull(holder.getKey()).intValue();
-        return this.findById(userId);
+        return Optional.ofNullable(this.findById(userId));
     }
 
     @Override

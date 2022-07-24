@@ -1,7 +1,6 @@
 package com.project.spring.messagescheduler.repository.implmentation;
 
 import com.project.spring.messagescheduler.entity.Message;
-import com.project.spring.messagescheduler.entity.User;
 import com.project.spring.messagescheduler.exceptions.ResourceNotFoundException;
 import com.project.spring.messagescheduler.repository.MessageRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,7 +8,6 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.InvalidResultSetAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
@@ -17,13 +15,15 @@ import org.springframework.stereotype.Repository;
 import java.sql.*;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 @Repository
 public class MessageRepositoryImpl implements MessageRepository {
     @Autowired
     private JdbcTemplate jdbcTemplate;
     @Override
-    public Message saveMessage(Message message) throws ResourceNotFoundException {
+    public Optional<Message> saveMessage(Message message) throws ResourceNotFoundException {
+        if(message==null) throw new NullPointerException("Message Data cannot be null");
         String SQL_QUERY="INSERT INTO message(message_content,user_id,phone_number,scheduled_at,status) VALUES(?,?,?,?,?)";
         KeyHolder keyHolder=new GeneratedKeyHolder();
         try {
@@ -44,7 +44,7 @@ public class MessageRepositoryImpl implements MessageRepository {
         }
 
         Long messageId= Objects.requireNonNull(keyHolder.getKey()).longValue();
-        return retrieveMessage(messageId);
+        return Optional.ofNullable(retrieveMessage(messageId));
     }
 
     @Override

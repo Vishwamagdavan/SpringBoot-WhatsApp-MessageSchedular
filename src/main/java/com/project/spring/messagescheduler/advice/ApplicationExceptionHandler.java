@@ -20,6 +20,12 @@ import java.util.Map;
 @ControllerAdvice
 public class ApplicationExceptionHandler {
 
+    @ExceptionHandler(value = NullPointerException.class)
+    public Map<String,String> handleNullPointerException(NullPointerException exception){
+        Map<String,String> errorMessage=new HashMap<>();
+        errorMessage.put("message",exception.getMessage());
+        return errorMessage;
+    }
     /**
      * Runtime Exception - Handles all the exception during runtime
      * @param exception

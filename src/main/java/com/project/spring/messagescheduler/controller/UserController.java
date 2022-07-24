@@ -9,6 +9,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Optional;
+
 @RestController
 @RequestMapping("/api/user")
 public class UserController {
@@ -16,11 +18,17 @@ public class UserController {
     private UserService service;
     @PostMapping("/adduser")
     public ResponseEntity<User> createUser(@RequestBody UserRequest userRequest) throws ResourceNotFoundException {
-        return new ResponseEntity<User>(service.addUser(userRequest), HttpStatus.CREATED);
+        Optional<User> user=service.addUser(userRequest);
+        if(!user.isPresent()){
+            throw new ResourceNotFoundException("Something went wrong");
+        }
+        return new ResponseEntity<User>(user.get(), HttpStatus.CREATED);
     }
 
+/*
     @PostMapping("/login")
     public ResponseEntity<Object> loginUser(@RequestHeader("auth_token") String authToken, @RequestBody UserRequest userRequest){
         return null;
     }
+ */
 }
