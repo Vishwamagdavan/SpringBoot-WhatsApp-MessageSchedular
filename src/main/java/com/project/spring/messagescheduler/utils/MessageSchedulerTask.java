@@ -1,6 +1,7 @@
 package com.project.spring.messagescheduler.utils;
 
 import com.project.spring.messagescheduler.entity.Message;
+import com.project.spring.messagescheduler.exceptions.ResourceNotFoundException;
 import com.project.spring.messagescheduler.repository.MessageRepository;
 import com.squareup.okhttp.*;
 import org.slf4j.Logger;
@@ -26,10 +27,10 @@ public class MessageSchedulerTask extends TimerTask {
         this.messageRepository = messageRepository;
     }
 
-    List<Message> pollFromDatabase() throws Exception {
+    List<Message> pollFromDatabase() throws ResourceNotFoundException {
         List<Message> messageGroup=messageRepository.retrieveAllMessages();
         if(messageGroup==null)
-            throw new Exception("Problem in Fetching file");
+            throw new ResourceNotFoundException("Problem in Fetching file");
         return messageGroup;
     }
 
@@ -57,7 +58,6 @@ public class MessageSchedulerTask extends TimerTask {
             catch (NullPointerException nullPointerException){
                 logger.info("Failed to Connect API");
             }
-
         }
     }
 }

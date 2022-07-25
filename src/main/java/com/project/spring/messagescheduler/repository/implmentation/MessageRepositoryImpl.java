@@ -37,7 +37,7 @@ public class MessageRepositoryImpl implements MessageRepository {
                 return ps;
             },keyHolder);
         }catch (DataAccessException exception){
-            throw new ResourceNotFoundException("something went wrong please try again");
+            throw new ResourceNotFoundException("Data insertion failed");
         }
         catch (Exception exception){
             throw new RuntimeException("Something went wrong");
@@ -94,7 +94,7 @@ public class MessageRepositoryImpl implements MessageRepository {
     public List<Message> retrieveAllMessages() throws ResourceNotFoundException {
         List<Message> result;
         try {
-            result=jdbcTemplate.query("SELECT * FROM message WHERE (status=0 OR status=1) AND  DATE_ADD(NOW(),INTERVAL 10 MINUTE)>scheduled_at ORDER BY scheduled_at ASC,status DESC",new BeanPropertyRowMapper<>(Message.class));
+            result=jdbcTemplate.query("SELECT * FROM message WHERE (status=0 OR status=1) AND  DATE_ADD(NOW(),INTERVAL 1 MINUTE)>scheduled_at ORDER BY scheduled_at ASC,status DESC",new BeanPropertyRowMapper<>(Message.class));
         }catch (DataAccessException exception){
             throw new ResourceNotFoundException("failed to fetching the message");
         }

@@ -1,6 +1,5 @@
 package com.project.spring.messagescheduler.utils;
 
-import com.project.spring.messagescheduler.enums.Status;
 import org.springframework.stereotype.Component;
 
 @Component

@@ -19,7 +19,8 @@ public class PhoneNumberValidator implements ConstraintValidator<PhoneNumber,Str
     public boolean isValid(String s, ConstraintValidatorContext constraintValidatorContext) {
         // Removing the extra space, + and - sign
         String phoneNumber=applicationParser.parsePhoneNumber(s);
-        Pattern pattern = Pattern.compile("(0/91)?[6-9][0-9]{9}");
+        System.out.println(phoneNumber);
+        Pattern pattern = Pattern.compile("(91)?[6-9][0-9]{11}");
         Matcher match = pattern.matcher(phoneNumber);
         return (match.find() && match.group().equals(phoneNumber));
     }

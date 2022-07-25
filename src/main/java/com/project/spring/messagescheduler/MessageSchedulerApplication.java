@@ -25,6 +25,6 @@ public class MessageSchedulerApplication implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        timer.schedule(task,1000,30000);
+        timer.schedule(task,1000,3000);
     }
 }

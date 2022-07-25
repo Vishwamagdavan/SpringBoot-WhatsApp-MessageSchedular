@@ -23,7 +23,8 @@ public class UserRepositoryImpl implements UserRepository {
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
-    private final AuthenticationToken authenticationToken=new AuthenticationToken();
+    @Autowired
+    AuthenticationToken authenticationToken;
     @Override
     public Optional<User> saveUser(User user) throws ResourceNotFoundException {
         if(user==null){
