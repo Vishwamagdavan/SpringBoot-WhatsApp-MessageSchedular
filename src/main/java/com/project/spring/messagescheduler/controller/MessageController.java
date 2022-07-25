@@ -15,6 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 import java.util.Optional;
 
@@ -37,8 +38,8 @@ public class MessageController {
 
     @PostMapping("/text")
     @ResponseBody
-    public ResponseEntity<Message> sendMessageToClient(@RequestHeader(value ="auth_token", required = true) String authToken,@RequestBody MessageRequest messageRequest) throws AuthFailedException, ResourceNotFoundException {
-        logger.info(authToken);
+    public ResponseEntity<Message> sendMessageToClient(@RequestHeader(value ="auth_token", required = true) String authToken,@RequestBody @Valid MessageRequest messageRequest) throws AuthFailedException, ResourceNotFoundException {
+        logger.info(messageRequest.toString());
         if(!authRequest.isValidUser(authToken, (long) messageRequest.getUserId())){
             throw new AuthFailedException("Invalid User");
         }

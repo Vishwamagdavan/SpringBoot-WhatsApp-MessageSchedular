@@ -68,8 +68,12 @@ public class ApplicationExceptionHandler {
      */
     @ExceptionHandler(value = {MethodArgumentNotValidException.class, DataIntegrityViolationException.class})
     public ResponseEntity<?> handleInvalidArgument(MethodArgumentNotValidException exception,WebRequest request){
-        ErrorDetails errorDetails = new ErrorDetails(new Date(), exception.getMessage(), request.getDescription(false));
-        return new ResponseEntity<>(errorDetails, HttpStatus.BAD_REQUEST);
+        HashMap<String,String> map=new HashMap<>();
+        map.put("date",new Date().toString());
+        exception.getBindingResult().getFieldErrors().forEach(error->{
+            map.put(error.getField(),error.getDefaultMessage());
+        });
+        return new ResponseEntity<>(map, HttpStatus.BAD_REQUEST);
     }
 
     /**
@@ -87,7 +91,6 @@ public class ApplicationExceptionHandler {
 
     @ExceptionHandler(AuthFailedException.class)
     public ResponseEntity<?> authException(AuthFailedException ex, WebRequest request) {
-        System.out.println("HERE");
         ErrorDetails errorDetails = new ErrorDetails(new Date(), ex.getMessage(), request.getDescription(false));
         return new ResponseEntity<>(errorDetails, HttpStatus.BAD_REQUEST);
     }

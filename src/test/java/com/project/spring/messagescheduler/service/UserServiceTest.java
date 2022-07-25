@@ -15,7 +15,9 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 
 import java.sql.Timestamp;
 import java.time.Instant;
+import java.util.Optional;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
@@ -23,9 +25,9 @@ import static org.mockito.Mockito.when;
 
 @SpringBootTest
 class UserServiceTest {
+
     @MockBean
     UserRepository userRepository;
-
     @Autowired
     UserService userService;
     Logger logger = LoggerFactory.getLogger(UserServiceTest.class);
@@ -34,14 +36,19 @@ class UserServiceTest {
 
     @BeforeEach
     public void setUpInstance(){
-        userRequest=UserRequest.build(5,"Vishva","", Timestamp.from(Instant.now()));
     }
 
     @Test
-    public void whenUserRequestIsEmpty() throws ResourceNotFoundException {
-        User user=User.build(14L,"Vishva","",null);
-        given(userService.addUser(userRequest)).willReturn(user);
-        assertNull(user);
+    public void whenUserRequestIsNotEmpty() throws ResourceNotFoundException {
+        User user=User.build(17L,"ninja","fff3fd6f-0476-4582-ba54-610cb3916e04",Timestamp.valueOf("2022-07-25 11:28:28"));
+        when(userRepository.saveUser(user)).thenReturn(Optional.ofNullable(user));
+        assertThat(userService.addUser(UserRequest.build("ninja")).isPresent());
+    }
 
+    @Test
+    public void whenUserRequestEmpty() throws ResourceNotFoundException {
+        User user=null;
+        when(userRepository.saveUser(null)).thenReturn(null);
+        assertThat(userService.addUser(UserRequest.build(null))).isEmpty();
     }
 }

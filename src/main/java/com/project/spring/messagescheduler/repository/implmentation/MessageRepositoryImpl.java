@@ -43,6 +43,7 @@ public class MessageRepositoryImpl implements MessageRepository {
             throw new RuntimeException("Something went wrong");
         }
 
+
         Long messageId= Objects.requireNonNull(keyHolder.getKey()).longValue();
         return Optional.ofNullable(retrieveMessage(messageId));
     }
@@ -56,7 +57,7 @@ public class MessageRepositoryImpl implements MessageRepository {
             throw new RuntimeException("Something went wrong");
         }
         catch (DataAccessException exception){
-            throw  new RuntimeException("");
+            throw  new RuntimeException("Database failure");
         }
         return message;
     }

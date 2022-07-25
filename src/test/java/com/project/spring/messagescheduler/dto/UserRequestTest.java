@@ -22,21 +22,21 @@ class UserRequestTest {
 
     @Test
     public void whenNotNullName_thenNoConstraintViolations() {
-        UserRequest user = new UserRequest("Vishva");
+        UserRequest user = UserRequest.build("Vishva");
         Set<ConstraintViolation<UserRequest>> violations = validator.validate(user);
         assertEquals(violations.size(),0);
     }
 
     @Test
     public void whenNullName_thenOneConstraintViolation() {
-        UserRequest user = new UserRequest(null);
+        UserRequest user =UserRequest.build(null);
         Set<ConstraintViolation<UserRequest>> violations = validator.validate(user);
         assertEquals(violations.size(),1);
     }
 
     @Test
     public void whenEmptyName_thenNoConstraintViolations() {
-        UserRequest user = new UserRequest("");
+        UserRequest user = UserRequest.build("");
         Set<ConstraintViolation<UserRequest>> violations = validator.validate(user);
         assertEquals(violations.size(),1);
     }
