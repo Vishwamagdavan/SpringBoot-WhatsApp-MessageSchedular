@@ -27,6 +27,11 @@ public class MessageSchedulerTask extends TimerTask {
         this.messageRepository = messageRepository;
     }
 
+    /**
+     * Method returns collection of Message, that are directly fetched from the Database
+     * @return list of message
+     * @throws ResourceNotFoundException when any interrupt occurs
+     */
     List<Message> pollFromDatabase() throws ResourceNotFoundException {
         List<Message> messageGroup=messageRepository.retrieveAllMessages();
         if(messageGroup==null)
@@ -34,6 +39,9 @@ public class MessageSchedulerTask extends TimerTask {
         return messageGroup;
     }
 
+    /**
+     * It is extended from TimerTask, where each message is iterated and sent to the client if the status code is 0 or 1.
+     */
     @Override
     public void run() {
         List<Message> messages= null;

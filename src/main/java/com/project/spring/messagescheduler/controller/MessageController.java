@@ -3,7 +3,6 @@ package com.project.spring.messagescheduler.controller;
 import com.project.spring.messagescheduler.dto.MessageRequest;
 import com.project.spring.messagescheduler.entity.Message;
 import com.project.spring.messagescheduler.exceptions.AuthFailedException;
-import com.project.spring.messagescheduler.exceptions.InputExceptions;
 import com.project.spring.messagescheduler.exceptions.ResourceNotFoundException;
 import com.project.spring.messagescheduler.service.AuthRequest;
 import com.project.spring.messagescheduler.service.MessageService;
@@ -67,13 +66,13 @@ public class MessageController {
     }
 
     @GetMapping("/message/{userId}/{status}")
-    public ResponseEntity<List<Message>> retrieveAllStatusMessages(@RequestHeader("auth_token") String authToken,@PathVariable Long userId,@PathVariable String status) throws AuthFailedException, InputExceptions, ResourceNotFoundException {
+    public ResponseEntity<List<Message>> retrieveAllStatusMessages(@RequestHeader("auth_token") String authToken,@PathVariable Long userId,@PathVariable String status) throws AuthFailedException,ResourceNotFoundException {
         if(!authRequest.isValidUser(authToken,userId)){
             throw new AuthFailedException("Invalid User");
         }
         int statusCode=statusUtil.getStatus(status);
         if(statusCode==-1)
-            throw new InputExceptions("Wrong Status Type");
+            throw new ResourceNotFoundException("Wrong Status Type");
         return new ResponseEntity<>(service.retrieveByStatus(userId,statusCode),HttpStatus.OK);
     }
 }

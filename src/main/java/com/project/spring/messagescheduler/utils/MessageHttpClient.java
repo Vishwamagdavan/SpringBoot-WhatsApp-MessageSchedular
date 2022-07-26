@@ -41,6 +41,11 @@ public class MessageHttpClient {
     @Autowired
     private ApplicationParser applicationParser;
 
+    /**
+     * Performs a post call to the GUPSHUP API using OkHttpClient, the API call body is constructed using Gson and other package
+     * @param message Message object is passed as argument
+     * @return a response object if the API call is success and returns null if it fails or any exception occurs
+     */
     public ResponseBody httpClientPostRequest(Message message){
         try {
             Gson gson = new Gson();

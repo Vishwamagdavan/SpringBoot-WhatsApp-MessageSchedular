@@ -8,6 +8,10 @@ import java.util.UUID;
 
 @Component
 public class AuthenticationToken {
+    /**
+     * Generate Universal Unique Identifier, and return as string
+     * @return random UUID string
+     */
     public String generateAuthenticationToken(){
         return UUID.randomUUID().toString();
     }
