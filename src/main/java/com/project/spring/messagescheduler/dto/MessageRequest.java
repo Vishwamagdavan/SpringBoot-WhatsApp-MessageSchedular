@@ -23,7 +23,7 @@ public class MessageRequest {
     @NotBlank(message = "Please provide Phone number")
     @PhoneNumber
     private String phoneNumber;
-    @NotNull(message = "please provide time for scheduling")
+    @NotBlank(message = "please provide time for scheduling")
     @CustomDate
-    private Timestamp scheduledTime;
+    private String scheduledTime;
 }

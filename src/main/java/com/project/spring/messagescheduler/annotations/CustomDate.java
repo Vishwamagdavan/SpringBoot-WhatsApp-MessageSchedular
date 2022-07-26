@@ -11,7 +11,7 @@ import java.lang.annotation.*;
 @Target(ElementType.FIELD)
 @Constraint(validatedBy = CustomDateValidator.class)
 public @interface CustomDate {
-    String message() default "Invalid date format";
+    String message() default "Invalid date format, format yyyy-MM-dd HH:mm:ss";
     Class<?>[] groups() default {};
     Class<? extends Payload>[] payload() default {};
 }

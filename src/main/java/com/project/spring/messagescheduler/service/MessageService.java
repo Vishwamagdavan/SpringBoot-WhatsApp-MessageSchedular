@@ -7,6 +7,7 @@ import com.project.spring.messagescheduler.repository.MessageRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.sql.Timestamp;
 import java.util.List;
 import java.util.Optional;
 
@@ -15,7 +16,8 @@ public class MessageService {
     @Autowired
     private MessageRepository repository;
     public Optional<Message> saveMessage(MessageRequest messageRequest) throws ResourceNotFoundException {
-        Message message=Message.build(0,messageRequest.getMessageContent(),messageRequest.getUserId(),messageRequest.getPhoneNumber(),null,messageRequest.getScheduledTime(),0,null,null);
+        Message message=Message.build(0,messageRequest.getMessageContent(),messageRequest.getUserId(),
+                messageRequest.getPhoneNumber(),null, Timestamp.valueOf(messageRequest.getScheduledTime()),0,null,null);
         return repository.saveMessage(message);
     }
 
@@ -30,4 +32,5 @@ public class MessageService {
     public List<Message> retrieveByStatus(Long userId,int status) throws ResourceNotFoundException {
         return repository.retrieveMessageByStatus(userId,status);
     }
+
 }

@@ -101,6 +101,9 @@ public class MessageRepositoryImpl implements MessageRepository {
         catch (Exception exception){
             throw new RuntimeException("Something went wrong");
         }
+        finally {
+
+        }
         return result;
     }
 
