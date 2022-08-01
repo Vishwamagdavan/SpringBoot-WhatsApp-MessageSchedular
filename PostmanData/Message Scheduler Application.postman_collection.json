@@ -1,0 +1,297 @@
+{
+	"id": "383468de-dd36-188e-ea51-82a5245f23f2",
+	"name": "Message Scheduler Application",
+	"description": "",
+	"order": [
+		"7ff19c50-3bd2-cb5e-4e30-c9ad9b0b4510",
+		"f9c9d155-33fd-70db-11a6-0548fc2a0d16"
+	],
+	"folders": [
+		{
+			"name": "Message",
+			"description": "",
+			"collectionId": "383468de-dd36-188e-ea51-82a5245f23f2",
+			"order": [
+				"d3a8eaad-4f4c-5ae6-7b29-7fb8795e2af1",
+				"341a49d9-119d-f62c-cabb-606988233e16"
+			],
+			"owner": 0,
+			"folders_order": [],
+			"id": "a4de6ddf-a8f3-d8b5-d9c9-a9e6ae0fdc86"
+		},
+		{
+			"name": "User",
+			"description": "",
+			"collectionId": "383468de-dd36-188e-ea51-82a5245f23f2",
+			"order": [
+				"26cc4465-fccc-f2ee-bf48-024aee3e31f5",
+				"d2c8d836-4022-fdb4-bd77-223a7106d373"
+			],
+			"owner": 0,
+			"folders_order": [],
+			"id": "9ea072c2-95d1-e6b4-0e3f-1b41a3c13edd"
+		}
+	],
+	"folders_order": [
+		"a4de6ddf-a8f3-d8b5-d9c9-a9e6ae0fdc86",
+		"9ea072c2-95d1-e6b4-0e3f-1b41a3c13edd"
+	],
+	"timestamp": 1658117783024,
+	"owner": 0,
+	"public": false,
+	"requests": [
+		{
+			"id": "26cc4465-fccc-f2ee-bf48-024aee3e31f5",
+			"headers": "Content-Type: application/json\n",
+			"headerData": [
+				{
+					"key": "Content-Type",
+					"value": "application/json",
+					"description": "",
+					"enabled": true
+				}
+			],
+			"url": " http://localhost:8080/api/user/adduser",
+			"folder": "9ea072c2-95d1-e6b4-0e3f-1b41a3c13edd",
+			"queryParams": [],
+			"preRequestScript": null,
+			"pathVariables": {},
+			"pathVariableData": [],
+			"method": "POST",
+			"data": [],
+			"dataMode": "raw",
+			"tests": null,
+			"currentHelper": "normal",
+			"helperAttributes": {},
+			"time": 1658477326767,
+			"name": "Add User",
+			"description": "",
+			"collectionId": "383468de-dd36-188e-ea51-82a5245f23f2",
+			"responses": [],
+			"rawModeData": "{\n\t\"userName\":\"azure\"\n}"
+		},
+		{
+			"id": "341a49d9-119d-f62c-cabb-606988233e16",
+			"headers": "auth_token: 9dd510e9-9d7c-4cc1-95b8-d6692fcdc0a8\nContent-Type: application/json\n",
+			"headerData": [
+				{
+					"key": "auth_token",
+					"value": "9dd510e9-9d7c-4cc1-95b8-d6692fcdc0a8",
+					"description": "",
+					"enabled": true
+				},
+				{
+					"key": "Content-Type",
+					"value": "application/json",
+					"description": "",
+					"enabled": true
+				}
+			],
+			"url": " http://localhost:8080/api/message/text",
+			"folder": "a4de6ddf-a8f3-d8b5-d9c9-a9e6ae0fdc86",
+			"queryParams": [],
+			"preRequestScript": null,
+			"pathVariables": {},
+			"pathVariableData": [],
+			"method": "POST",
+			"data": [],
+			"dataMode": "raw",
+			"tests": null,
+			"currentHelper": "normal",
+			"helperAttributes": {},
+			"time": 1658489043150,
+			"name": "Save Message",
+			"description": "",
+			"collectionId": "383468de-dd36-188e-ea51-82a5245f23f2",
+			"responses": [],
+			"rawModeData": "{\n\t\"messageContent\":\"Testing API 1\",\n\t\"userId\":13,\n\t\"phoneNumber\":\"919952862652\",\n\t\"scheduledTime\":\"2022-07-22T04:21:27.000+00:00\"\n}"
+		},
+		{
+			"id": "7ff19c50-3bd2-cb5e-4e30-c9ad9b0b4510",
+			"headers": "Content-Type: application/x-www-form-urlencoded\napikey: z8cjcoyjfsiapqau6fehzoddnxxk5wdr\nAccept: application/json\n",
+			"headerData": [
+				{
+					"key": "Content-Type",
+					"value": "application/x-www-form-urlencoded",
+					"description": "",
+					"enabled": true
+				},
+				{
+					"key": "apikey",
+					"value": "z8cjcoyjfsiapqau6fehzoddnxxk5wdr",
+					"description": "",
+					"enabled": true
+				},
+				{
+					"key": "Accept",
+					"value": "application/json",
+					"description": "",
+					"enabled": true
+				}
+			],
+			"url": "https://api.gupshup.io/sm/api/v1/msg",
+			"queryParams": [],
+			"preRequestScript": null,
+			"pathVariables": {},
+			"pathVariableData": [],
+			"method": "POST",
+			"data": [
+				{
+					"key": "channel",
+					"value": "whatsapp",
+					"type": "text",
+					"enabled": true
+				},
+				{
+					"key": "source",
+					"value": "917834811114",
+					"type": "text",
+					"enabled": true
+				},
+				{
+					"key": "src.name",
+					"value": "NinjaWhatsAppService",
+					"type": "text",
+					"enabled": true
+				},
+				{
+					"key": "destination",
+					"value": "919952862652",
+					"type": "text",
+					"enabled": true
+				},
+				{
+					"key": "message.type",
+					"value": "text",
+					"type": "text",
+					"enabled": true
+				},
+				{
+					"key": "message.text",
+					"value": "hi how are you rb",
+					"description": "",
+					"type": "text",
+					"enabled": true
+				}
+			],
+			"dataMode": "urlencoded",
+			"tests": null,
+			"currentHelper": "normal",
+			"helperAttributes": {},
+			"time": 1658465766975,
+			"name": "Gupshup API Test",
+			"description": "",
+			"collectionId": "383468de-dd36-188e-ea51-82a5245f23f2",
+			"responses": []
+		},
+		{
+			"id": "d2c8d836-4022-fdb4-bd77-223a7106d373",
+			"headers": "//authtoken: 82793852-48d6-4b47-8d02-226850dfa0cd\n//Content-Type: application/json\n",
+			"headerData": [
+				{
+					"key": "authtoken",
+					"value": "82793852-48d6-4b47-8d02-226850dfa0cd",
+					"description": "",
+					"enabled": false
+				},
+				{
+					"key": "Content-Type",
+					"value": "application/json",
+					"description": "",
+					"enabled": false
+				}
+			],
+			"url": " http://localhost:8080/api/gupshup/send",
+			"folder": "9ea072c2-95d1-e6b4-0e3f-1b41a3c13edd",
+			"queryParams": [],
+			"preRequestScript": null,
+			"pathVariables": {},
+			"pathVariableData": [],
+			"method": "POST",
+			"data": [],
+			"dataMode": "raw",
+			"tests": null,
+			"currentHelper": "normal",
+			"helperAttributes": {},
+			"time": 1658206310916,
+			"name": "Login",
+			"description": "",
+			"collectionId": "383468de-dd36-188e-ea51-82a5245f23f2",
+			"responses": [],
+			"rawModeData": "{\n\t\n}"
+		},
+		{
+			"id": "d3a8eaad-4f4c-5ae6-7b29-7fb8795e2af1",
+			"headers": "Authorization: \n",
+			"headerData": [
+				{
+					"key": "Authorization",
+					"value": "",
+					"description": "",
+					"enabled": true
+				}
+			],
+			"url": " http://localhost:8080/api/test",
+			"queryParams": [],
+			"pathVariables": {},
+			"pathVariableData": [],
+			"preRequestScript": null,
+			"method": "GET",
+			"collectionId": "383468de-dd36-188e-ea51-82a5245f23f2",
+			"data": null,
+			"dataMode": "params",
+			"name": "Message ConnectionTest",
+			"description": "",
+			"descriptionFormat": "html",
+			"time": 1658132238136,
+			"version": 2,
+			"responses": [],
+			"tests": null,
+			"currentHelper": "normal",
+			"helperAttributes": {},
+			"folder": "a4de6ddf-a8f3-d8b5-d9c9-a9e6ae0fdc86"
+		},
+		{
+			"id": "f9c9d155-33fd-70db-11a6-0548fc2a0d16",
+			"headers": "api_key: z8cjcoyjfsiapqau6fehzoddnxxk5wdr\nContent-Type: application/x-www-form-urlencoded\n",
+			"headerData": [
+				{
+					"key": "api_key",
+					"value": "z8cjcoyjfsiapqau6fehzoddnxxk5wdr",
+					"description": "",
+					"enabled": true
+				},
+				{
+					"key": "Content-Type",
+					"value": "application/x-www-form-urlencoded",
+					"description": "",
+					"enabled": true
+				}
+			],
+			"url": "https://api.gupshup.io/sm/api/v1/app/opt/in/NinjaWhatsAppService",
+			"queryParams": [],
+			"preRequestScript": null,
+			"pathVariables": {},
+			"pathVariableData": [],
+			"method": "POST",
+			"data": [
+				{
+					"key": "mediaType",
+					"value": "user=919952862652",
+					"description": "",
+					"type": "text",
+					"enabled": true
+				}
+			],
+			"dataMode": "urlencoded",
+			"tests": null,
+			"currentHelper": "normal",
+			"helperAttributes": {},
+			"time": 1658206127065,
+			"name": "Add user opt",
+			"description": "",
+			"collectionId": "383468de-dd36-188e-ea51-82a5245f23f2",
+			"responses": []
+		}
+	]
+}
