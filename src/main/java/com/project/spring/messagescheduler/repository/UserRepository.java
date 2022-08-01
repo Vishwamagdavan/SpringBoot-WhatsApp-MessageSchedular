@@ -9,7 +9,6 @@ import java.util.Optional;
 public interface UserRepository {
     Optional<User> saveUser(User user) throws ResourceNotFoundException;
     User findById(long userId) throws RelationServiceNotRegisteredException, ResourceNotFoundException;
-    String retrieveAuthToken(long userId) throws ResourceNotFoundException;
 
     User isValidUser(String authToken, Long userId) throws ResourceNotFoundException;
 

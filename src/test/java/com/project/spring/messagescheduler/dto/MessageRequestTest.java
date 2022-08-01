@@ -30,7 +30,7 @@ class MessageRequestTest {
 
     @Test
     public void whenAllValidFields(){
-        MessageRequest messageRequest=new MessageRequest("hi welcome to Whatsapp API",12L, "+919952862652",Timestamp.from(Instant.now()));
+        MessageRequest messageRequest=new MessageRequest("hi welcome to Whatsapp API",12L, "+919952862652",Timestamp.from(Instant.now()).toString());
         Set<ConstraintViolation<MessageRequest>> violations = validator.validate(messageRequest);
         assertEquals(violations.size(),0);
     }

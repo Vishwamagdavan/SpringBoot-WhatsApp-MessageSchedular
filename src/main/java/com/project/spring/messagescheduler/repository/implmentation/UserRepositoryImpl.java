@@ -25,6 +25,13 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Autowired
     AuthenticationToken authenticationToken;
+
+    /**
+     * To save the user in the database using JDBC template update method
+     * @param user User object, contains - username and auth token
+     * @return Optional Object if the operations valid is updated else return some exception with details
+     * @throws ResourceNotFoundException error message displayed to the user
+     */
     @Override
     public Optional<User> saveUser(User user) throws ResourceNotFoundException {
         if(user==null){
@@ -33,6 +40,7 @@ public class UserRepositoryImpl implements UserRepository {
         String authToken=authenticationToken.generateAuthenticationToken();
         String SQL_QUERY="INSERT INTO users (user_name,auth_token) VALUES (?,?)";
         KeyHolder holder=new GeneratedKeyHolder();
+        int userId = -1;
         try {
             jdbcTemplate.update(con -> {
                 PreparedStatement ps=con.prepareStatement(SQL_QUERY, Statement.RETURN_GENERATED_KEYS);
@@ -40,17 +48,28 @@ public class UserRepositoryImpl implements UserRepository {
                 ps.setString(2,authToken);
                 return ps;
             },holder);
+            userId=Objects.requireNonNull(holder.getKey()).intValue();
         }
         catch (Exception exception){
             throw new RuntimeException("Problem in saving the data");
         }
-        int userId= Objects.requireNonNull(holder.getKey()).intValue();
-        return Optional.ofNullable(this.findById(userId));
+        finally {
+            return Optional.ofNullable(this.findById(userId));
+        }
     }
 
+    /**
+     * Method used to find the User, using the userID, it is done using the JDBC template
+     * @param userId used Must be valid
+     * @return User object that is directly fetched from the database;
+     * @throws ResourceNotFoundException Display the user with message;
+     */
     @Override
     public User findById(long userId) throws ResourceNotFoundException {
-        User result;
+        if(userId<0) {
+            throw new ResourceNotFoundException("User Id cannot be null");
+        }
+        User result = null;
         try {
             result=jdbcTemplate.queryForObject("SELECT * FROM users WHERE user_id=?", new BeanPropertyRowMapper<>(User.class),userId);
         }catch (DataAccessException exception){
@@ -59,26 +78,21 @@ public class UserRepositoryImpl implements UserRepository {
         catch (Exception exception){
             throw new RuntimeException("Something went wrong");
         }
-        return result;
+        finally {
+            return result;
+        }
     }
 
-    @Override
-    public String retrieveAuthToken(long userId) throws ResourceNotFoundException {
-        String result;
-        try {
-            result= jdbcTemplate.queryForObject("SELECT auth_token FROM users WHERE user_id=?",String.class,userId);
-        }catch (DataAccessException exception){
-            throw new ResourceNotFoundException("Cannot fetch user with id:"+userId);
-        }
-        catch (Exception exception){
-            throw new RuntimeException("Something went wrong");
-        }
-        return result;
-    }
-
+    /**
+     * Checks if the user is valid for the message request sent from the client
+     * @param authToken auth token from header
+     * @param userId user ID and auth token must be same
+     * @return true if the user is present or not
+     * @throws ResourceNotFoundException display error for the user
+     */
     @Override
     public User isValidUser(String authToken, Long userId) throws ResourceNotFoundException {
-        User result;
+        User result = null;
         try {
             result=jdbcTemplate.queryForObject("SELECT * FROM users WHERE auth_token=? AND user_id=?", new BeanPropertyRowMapper<>(User.class), authToken,userId);
         }catch (DataAccessException exception){
@@ -87,12 +101,19 @@ public class UserRepositoryImpl implements UserRepository {
         catch (Exception exception){
             throw new RuntimeException("Something went wrong");
         }
-        return result;
+        finally {
+            return result;
+        }
     }
-
+    /**
+     * Checks for the valid auth_token header
+     * @param authToken auth token from header
+     * @return true if the user is present or not
+     * @throws ResourceNotFoundException display error for the user
+     */
     @Override
     public User isValidToken(String authToken) throws ResourceNotFoundException {
-        User result;
+        User result=null;
         try {
             result=jdbcTemplate.queryForObject("SELECT * FROM users WHERE auth_token=?", new BeanPropertyRowMapper<>(User.class), authToken);
         }catch (DataAccessException exception){
@@ -101,7 +122,8 @@ public class UserRepositoryImpl implements UserRepository {
         catch (Exception exception){
             throw new RuntimeException("Something went wrong");
         }
-        return result;
-
+        finally {
+            return result;
+        }
     }
 }

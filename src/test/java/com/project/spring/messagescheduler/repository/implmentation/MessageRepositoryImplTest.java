@@ -24,15 +24,15 @@ class MessageRepositoryImplTest {
     @Test
     void saveMessage() throws ResourceNotFoundException {
         Message message=Message.build(0,"Testing for Message Repository",8,"919952862652",Timestamp.from(Instant.now()),Timestamp.from(Instant.now()),0,null,null);
-        Optional<Message> result=messageRepository.saveMessage(message);
+        Message result=messageRepository.saveMessage(message);
         assertNotNull(result);
-        assertEquals(result.get().getStatus(),0);
+        assertEquals(result.getStatus(),0);
     }
 
     @Test
-    void saveMesssageWhenNull() throws ResourceNotFoundException {
+    void saveMessageWhenNull() throws ResourceNotFoundException {
         try {
-            Optional<Message> result=messageRepository.saveMessage(null);
+            Message result=messageRepository.saveMessage(null);
             assertNull(result);
 
         }

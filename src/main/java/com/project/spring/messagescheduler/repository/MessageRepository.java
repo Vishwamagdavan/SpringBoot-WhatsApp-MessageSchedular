@@ -4,10 +4,9 @@ import com.project.spring.messagescheduler.entity.Message;
 import com.project.spring.messagescheduler.exceptions.ResourceNotFoundException;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface MessageRepository {
-    Optional<Message> saveMessage(Message message) throws ResourceNotFoundException;
+    Message saveMessage(Message message) throws ResourceNotFoundException;
     Message retrieveMessage(Long messageId);
     List<Message> retrieveAllMessagesById(Long userId) throws ResourceNotFoundException;
 
